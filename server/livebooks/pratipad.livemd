@@ -1,0 +1,59 @@
+# Pratipad Example
+
+## Graphs
+
+```elixir
+alias VegaLite, as: Vl
+import Ecto.Query
+
+query = from(Pratipad.Example.Server.SensorData)
+records = Pratipad.Example.Server.Repo.all(query)
+
+data =
+  records
+  |> Enum.map(&Map.from_struct/1)
+  |> Enum.map(&Map.delete(&1, :__meta__))
+  |> Enum.map(&Map.put(&1, :measured_at, to_string(&1.measured_at)))
+  |> Enum.map(&Map.put(&1, :pressure_pa, &1.pressure_pa / 100))
+
+Vl.new()
+|> Vl.data_from_values(data)
+|> Vl.concat([
+  Vl.new(width: 100, height: 100)
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "measured_at", type: :temporal, title: "time")
+  |> Vl.encode_field(:y, "co2_concentration",
+    aggregate: :mean,
+    type: :quantitative,
+    title: "CO2 (ppm)"
+  )
+  |> Vl.encode_field(:color, "device_id", type: :nominal),
+  Vl.new(width: 100, height: 100)
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "measured_at", type: :temporal, title: "time")
+  |> Vl.encode_field(:y, "humidity_rh",
+    aggregate: :mean,
+    type: :quantitative,
+    title: "humidity (%)"
+  )
+  |> Vl.encode_field(:color, "device_id", type: :nominal),
+  Vl.new(width: 100, height: 100)
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "measured_at", type: :temporal, title: "time")
+  |> Vl.encode_field(:y, "pressure_pa",
+    aggregate: :mean,
+    type: :quantitative,
+    title: "pressure (hPa)"
+  )
+  |> Vl.encode_field(:color, "device_id", type: :nominal),
+  Vl.new(width: 100, height: 100)
+  |> Vl.mark(:line)
+  |> Vl.encode_field(:x, "measured_at", type: :temporal, title: "time")
+  |> Vl.encode_field(:y, "temperature_c",
+    aggregate: :mean,
+    type: :quantitative,
+    title: "temperature (℃)"
+  )
+  |> Vl.encode_field(:color, "device_id", type: :nominal)
+])
+```
