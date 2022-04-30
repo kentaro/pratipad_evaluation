@@ -49,8 +49,8 @@ defmodule PratipadExample.MixProject do
 
       # Pratipad
       {:req, "~> 0.2.2"},
-      {:pratipad, path: "../../pratipad", override: true},
-      {:off_broadway_otp_distribution, path: "../../off_broadway_otp_distribution", override: true},
+      {:pratipad, github: "kentaro/pratipad"},
+      {:off_broadway_otp_distribution, github: "kentaro/off_broadway_otp_distribution"},
       {:broadway_dashboard, "~> 0.2.0"}
     ]
   end
