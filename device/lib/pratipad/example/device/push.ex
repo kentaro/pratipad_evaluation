@@ -5,7 +5,13 @@ defmodule Pratipad.Example.Device.Push do
   @interval 1000
 
   @impl GenServer
-  def handle_cast(:loop_push_message, state) do
+  def handle_cast(:start_push_message, state) do
+    send(self(), :loop_push_message)
+    {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_info(:loop_push_message, state) do
     GenServer.cast(self(), :push_message)
     Process.send_after(self(), :loop_push_message, @interval)
     {:noreply, state}

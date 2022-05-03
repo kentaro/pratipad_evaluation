@@ -41,7 +41,7 @@ defmodule Benchmark do
           ]
         })
 
-      GenServer.cast(pid, :loop_push_message)
+      GenServer.cast(pid, :start_push_message)
     end)
   end
 
