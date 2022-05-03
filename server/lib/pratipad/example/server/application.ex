@@ -9,11 +9,9 @@ defmodule Pratipad.Example.Server.Application do
       {Pratipad.Example.Server.Client,
        [
          name: :pratipad_example_server,
-         forwarder_name: :pratipad_backwarder_input,
          backwarder_name: :pratipad_forwarder_output,
          connection_mode: :server
-       ]},
-      {Pratipad.Example.Server.Repo, []}
+       ]}
     ]
 
     opts = [strategy: :one_for_one, name: Pratipad.Example.Server.Supervisor]
