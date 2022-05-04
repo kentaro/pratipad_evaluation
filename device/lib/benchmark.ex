@@ -4,7 +4,8 @@ defmodule Benchmark do
   def start(type, num) do
     DynamicSupervisor.start_link(
       strategy: :one_for_one,
-      name: @supervisor
+      name: @supervisor,
+      max_children: 10000
     )
 
     start_processes(type, num)
