@@ -10,5 +10,6 @@ defmodule Pratipad.Example.Server.Client do
   @impl Client.Backward
   def forward_message(message) do
     Logger.info("forward_message: #{inspect(message)}")
+    :ets.update_counter(:counter, :count, 1)
   end
 end
