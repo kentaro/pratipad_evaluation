@@ -5,6 +5,7 @@ defmodule Pratipad.Example.Application do
 
   @impl true
   def start(_type, _args) do
+    Logger.configure(level: :info)
     connect_node()
 
     children = [
