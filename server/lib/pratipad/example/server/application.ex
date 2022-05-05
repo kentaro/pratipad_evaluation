@@ -6,7 +6,7 @@ defmodule Pratipad.Example.Server.Application do
   @impl true
   def start(_type, _args) do
     Logger.configure(level: :info)
-    :ets.new(:counter, [:set, :protected, :named_table])
+    :ets.new(:counter, [:set, :public, :named_table])
     :ets.insert_new(:counter, {:count, 0})
 
     children = [
