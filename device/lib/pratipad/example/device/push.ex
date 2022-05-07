@@ -5,16 +5,23 @@ defmodule Pratipad.Example.Device.Push do
   @interval 1000
 
   @impl GenServer
-  def handle_cast(:start_push_message, state) do
+  def handle_cast({:start_push_message, opts}, state) do
     send(self(), :loop_push_message)
+    Process.send_after(self(), :stop_push_message, opts[:duration])
     {:noreply, state}
   end
 
   @impl GenServer
   def handle_info(:loop_push_message, state) do
     GenServer.cast(self(), :push_message)
-    Process.send_after(self(), :loop_push_message, @interval)
-    {:noreply, state}
+    timer = Process.send_after(self(), :loop_push_message, @interval)
+    {:noreply, Map.put(state, :timer, timer)}
+  end
+
+  @impl GenServer
+  def handle_info(:stop_push_message, state) do
+    Process.cancel_timer(state.timer)
+    {:noreply, Map.put(state, :timer, nil)}
   end
 
   @impl Push

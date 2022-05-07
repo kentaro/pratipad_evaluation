@@ -12,12 +12,20 @@ defmodule Benchmark.Worker do
         max_children: 10000
       )
 
-    Process.send_after(self(), :stop, opts[:duration])
-    start_processes(opts[:type], opts[:num])
+    if opts[:type] == :demand do
+      Process.send_after(self(), :stop, opts[:duration])
+    end
+
+    start_processes(opts[:type], opts)
+    start_time = Time.utc_now()
+
+    if opts[:type] == :push do
+      Process.send_after(self(), :stop, opts[:duration])
+    end
 
     {:ok,
      %{
-       start: Time.utc_now(),
+       start: start_time,
        end: nil,
        supervisor: pid
      }}
@@ -41,8 +49,8 @@ defmodule Benchmark.Worker do
     {:reply, count, state}
   end
 
-  defp start_processes(:demand, num) do
-    1..num
+  defp start_processes(:demand, opts) do
+    1..opts[:num]
     |> Enum.each(fn n ->
       device_name = :"pratipad_example_device_#{n}"
 
@@ -57,8 +65,8 @@ defmodule Benchmark.Worker do
     end)
   end
 
-  defp start_processes(:push, num) do
-    1..num
+  defp start_processes(:push, opts) do
+    1..opts[:num]
     |> Enum.each(fn n ->
       device_name = :"pratipad_example_device_#{n}"
 
@@ -72,7 +80,7 @@ defmodule Benchmark.Worker do
           ]
         })
 
-      GenServer.cast(pid, :start_push_message)
+      GenServer.cast(pid, {:start_push_message, opts})
     end)
   end
 end
